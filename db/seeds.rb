@@ -1,7 +1,12 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+
+puts "Creating prices with a time between today and yesterday"
+price_array = (100..10000).to_a
+time_array = (Time.now.yesterday.to_i..Time.now.to_i).to_a
+
+10000.times do
+  Price.create!(value: price_array.sample, time: Time.at(time_array.sample))
+end
+
+puts "Prices created !"
