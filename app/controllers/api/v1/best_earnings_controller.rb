@@ -1,15 +1,17 @@
 module Api
   module V1
-    class PricesController < ApplicationController
-      # With more time I would have added pagination and throttling
-      # According to the business context I would also consider authorization and caching.
-      def index
-        prices = Price.where(time: min_time..max_time).order(time: :desc)
-        render json: prices
+    class BestEarningsController < ApplicationController
+      def show
+        render json: { amount: best_earning }
       end
-    
+
       private
-    
+
+      def best_earning
+        BestEarningCalculator.new(min_time: min_time, max_time: max_time).result
+      end
+
+      # With more time and if more duplication arise the code below should probably extracted somewhere else
       def query_params
         params.permit(:min_time, :max_time)
       end
