@@ -14,22 +14,21 @@ class BestEarningCalculator
 
   private
 
-  # Best case scenario : O(1)
-  # Worst case scenario : O(n*n)
-  # It works but it is not ideal
+  # O(n) = n/2 * (n + 1)
   def calculate
-    prices.each do |price|
-      min_price = prices.reverse.find do|other_price|
-        next if other_price == price
+    best_earning = 0
 
-        price.time > other_price.time
+    prices.each_with_index do |buying_price, i|
+      prices[i..-1].each do |selling_price|
+        earning =  selling_price - buying_price
+        best_earning = earning if earning > best_earning
       end
-
-      break price.value - min_price.value if min_price
     end
+
+    best_earning
   end
 
   def prices
-    @prices ||= Price.where(time: min_time..max_time).order(value: :desc)
+    @prices ||= Price.where(time: min_time..max_time).order(time: :asc).pluck(:value)
   end
 end

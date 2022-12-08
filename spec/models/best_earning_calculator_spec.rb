@@ -7,15 +7,26 @@ RSpec.describe BestEarningCalculator do
     let(:min_time) { now - 1000 }
     let(:max_time) { now + 1000 }
 
-    context "when there are at least 2 prices" do
-      let!(:max_price) { create :price, time: max_time, value: 1000 }
-      let!(:min_price) { create :price, time: min_time + 10, value: 1 }
-      let!(:other_price1) { create :price, value: max_price.value + 100, time: min_price.time - 10 }
-      let!(:other_price2) { create :price, value: max_price.value - 10, time: max_time }
-
-      it "returns the best earning according to the prices" do
-        expect(result).to eq 999
+    context "when several positive earnings are possible" do
+      before do
+        [100, 110, 80, 100].each_with_index do |value, i|
+          Price.create!(value: value, time: now + i )
+        end
       end
+
+      it "returns the highest earning possible" do
+        expect(result).to eq 20
+      end
+    end
+
+    context "when no positive earning is possible" do
+      before do
+        [4, 3, 2, 1].each_with_index do |value, i|
+          Price.create!(value: value, time: now + i )
+        end
+      end
+
+      it { is_expected.to eq 0 }
     end
 
     context "when there are no prices" do
